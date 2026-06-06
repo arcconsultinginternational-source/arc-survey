@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arc Consulting — Teacher Readiness Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#FAFAFA;color:#1A1614;min-height:100vh}
+.shell{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+.header{background:linear-gradient(135deg,#1baa5b 0%,#0f6536 100%);border-radius:16px;padding:32px;margin-bottom:28px;text-align:center}
+.header-logo{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:4px}
+.header-logo span{color:#a8f0c6}
+.header-sub{color:#d0f5e5;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px}
+.header-title{color:#fff;font-size:20px;font-weight:700;line-height:1.4}
+.header-desc{color:#d0f5e5;font-size:14px;margin-top:8px;line-height:1.6}
+.progress-bar{background:rgba(255,255,255,0.2);border-radius:99px;height:6px;margin-top:20px;overflow:hidden}
+.progress-fill{background:#fff;height:6px;transition:width 0.4s ease}
+.progress-label{color:rgba(255,255,255,0.8);font-size:12px;margin-top:8px;text-align:right}
+.gate-badge{display:inline-block;background:rgba(27,170,91,0.12);color:#0f6536;font-size:11px;font-weight:700;padding:4px 12px;border-radius:99px;margin-bottom:16px;letter-spacing:0.5px;border:1px solid rgba(27,170,91,0.25)}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:28px;margin-bottom:20px;display:none}
+.card.active{display:block}
+.card-title{font-size:18px;font-weight:800;color:#0f6536;margin-bottom:4px}
+.card-sub{font-size:14px;color:#718096;margin-bottom:24px;line-height:1.5}
+.field{margin-bottom:20px}
+label.field-label{display:block;font-size:14px;font-weight:700;color:#1A1614;margin-bottom:8px}
+label.field-label span.req{color:#e53e3e;margin-left:2px}
+input[type=text],input[type=email],input[type=number],input[type=tel],select,textarea{width:100%;padding:11px 14px;border:1.5px solid #cbd5e0;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;color:#1A1614;background:#fff;transition:border 0.2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#1baa5b;box-shadow:0 0 0 3px rgba(27,170,91,0.12)}
+textarea{resize:vertical;min-height:80px}
+.other-field{margin-top:10px;display:none}
+.radio-group,.check-group{display:flex;flex-direction:column;gap:10px}
+.radio-opt,.check-opt{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:14px;font-weight:600}
+.radio-opt:hover,.check-opt:hover{border-color:#1baa5b;background:#f0fdf6}
+.radio-opt.selected,.check-opt.selected{border-color:#1baa5b;background:#f0fdf6;color:#0f6536}
+.radio-opt input,.check-opt input{accent-color:#1baa5b;width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px}
+.btn{padding:12px 24px;border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s}
+.btn-back{background:#fff;border:1.5px solid #cbd5e0;color:#4a5568}
+.btn-back:hover{background:#f7fafc;border-color:#1baa5b}
+.btn-next{background:#1baa5b;color:#fff;flex:1;max-width:280px;margin-left:auto}
+.btn-next:hover{background:#0f6536}
+.hint{font-size:12px;color:#718096;margin-top:6px;line-height:1.5}
+.upload-area{border:2px dashed #cbd5e0;border-radius:12px;padding:28px;text-align:center;cursor:pointer;background:#fafafa}
+.upload-area input{display:none}
+.upload-icon{font-size:32px;margin-bottom:8px}
+.upload-label{font-size:14px;font-weight:700;color:#0f6536;margin-bottom:4px}
+.upload-sub{font-size:12px;color:#718096}
+.file-preview{display:none;margin-top:12px;background:#f0fdf6;border:1px solid #1baa5b;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;color:#0f6536}
+.result-card{border-radius:16px;padding:36px;text-align:center;margin-bottom:24px}
+.result-green{background:linear-gradient(135deg,#1baa5b,#0f6536)}
+.result-yellow{background:linear-gradient(135deg,#f6ad55,#dd6b20)}
+.result-red{background:linear-gradient(135deg,#fc8181,#c53030)}
+.result-icon{font-size:56px;margin-bottom:12px}
+.result-tier{color:#fff;font-size:22px;font-weight:800;margin-bottom:8px}
+.result-msg{color:#fff;font-size:15px;line-height:1.6;background:rgba(0,0,0,0.15);border-radius:10px;padding:16px;text-align:left}
+.gate-summary{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px}
+.gate-row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;gap:12px}
+.gate-row:last-child{border-bottom:none}
+.gate-label{font-weight:700;color:#1A1614;flex-shrink:0}
+.gate-val{color:#4a5568;text-align:right;word-break:break-word}
+.thank-note{background:#f0fdf6;border:1px solid #1baa5b;border-radius:10px;padding:16px;font-size:14px;color:#0f6536;text-align:center;margin-bottom:16px;line-height:1.6}
+.admin-gate{background:#1a1614;border-radius:14px;padding:28px;text-align:center;display:none;margin-top:20px}
+.admin-gate.active{display:block}
+.admin-title{color:#fff;font-size:18px;font-weight:800;margin-bottom:8px}
+.admin-sub{color:#a0aec0;font-size:13px;margin-bottom:20px}
+.admin-input{width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid #4a5568;background:#2d3748;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;outline:none;text-align:center;letter-spacing:2px}
+.admin-input:focus{border-color:#1baa5b}
+.admin-btn{margin-top:12px;width:100%;padding:13px;background:#1baa5b;color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.admin-export-btn{width:100%;padding:14px;background:#0f6536;color:#fff;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.admin-panel{display:none;margin-top:16px}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="header">
+  <div class="header-logo">Arc <span>Consulting</span></div>
+  <div class="header-sub">Bangkok · International Teacher Placement</div>
+  <div class="header-title">International Teacher Readiness Assessment</div>
+  <div class="header-desc">Free · Confidential · Takes 5–8 minutes<br>We're here to help you get there — let's see where you're starting from.</div>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:10%"></div></div>
+  <div class="progress-label" id="prog-label">Step 1 of 7</div>
+</div>
+
+<div class="card active" id="step1">
+  <div class="gate-badge">Before We Begin</div>
+  <div class="card-title">A bit about you</div>
+  <div class="card-sub">This helps Arc match you with the right opportunities. All fields marked * are required.</div>
+  <div class="grid2">
+    <div class="field"><label class="field-label">First name <span class="req">*</span></label><input type="text" id="fname" placeholder="e.g. Maria"></div>
+    <div class="field"><label class="field-label">Last name <span class="req">*</span></label><input type="text" id="lname" placeholder="e.g. Santos"></div>
+  </div>
+  <div class="field"><label class="field-label">Email address <span class="req">*</span></label><input type="email" id="email" placeholder="your@email.com"></div>
+  <div class="field"><label class="field-label">Phone number <span class="req">*</span></label><input type="tel" id="phone" placeholder="+66 81 234 5678"></div>
+  <div class="field"><label class="field-label">WhatsApp number <span class="req">*</span></label><input type="tel" id="whatsapp" placeholder="+66 81 234 5678"></div>
+  <div class="field"><label class="field-label">LINE ID (optional)</label><input type="text" id="line_id" placeholder="e.g. mariasantos_bkk"></div>
+  <div class="field">
+    <label class="field-label">Nationality <span class="req">*</span></label>
+    <select id="nationality" onchange="showNationalityOther()">
+      <option value="">Select your nationality…</option>
+      <option value="Filipino">Filipino</option>
+      <option value="Indian">Indian</option>
+      <option value="British">British</option>
+      <option value="American">American</option>
+      <option value="Australian">Australian</option>
+      <option value="Canadian">Canadian</option>
+      <option value="South African">South African</option>
+      <option value="Irish">Irish</option>
+      <option value="Other">Other</option>
+    </select>
+    <div class="other-field" id="nat_other"><input type="text" id="nationality_other" placeholder="Please specify your nationality"></div>
+  </div>
+  <div class="field"><label class="field-label">Current city / country <span class="req">*</span></label><input type="text" id="location" placeholder="e.g. Bangkok, Thailand"></div>
+  <div class="nav"><button class="btn btn-next" onclick="nextStep(2)">Let's begin →</button></div>
+</div>
+
+<div class="card" id="step2">
+  <div class="gate-badge">Gate 1 · Credentials</div>
+  <div class="card-title">Academic &amp; teaching qualifications</div>
+  <div class="card-sub">International schools require a bachelor's degree plus a formal teaching qualification.</div>
+  <div class="field"><label class="field-label">Highest degree level <span class="req">*</span></label>
+    <select id="degree">
+      <option value="">Select…</option>
+      <option value="3">Bachelor's degree (B.Ed / BA / BSc)</option>
+      <option value="4">Postgraduate diploma (PGDE / PGCE)</option>
+      <option value="4">Master's degree (M.Ed / MA / MSc)</option>
+      <option value="5">PhD / Doctorate</option>
+      <option value="1">Diploma (below bachelor's)</option>
+    </select>
+  </div>
+  <div class="field"><label class="field-label">Degree subject / major <span class="req">*</span></label><input type="text" id="major" placeholder="e.g. Mathematics, English Literature"></div>
+  <div class="field">
+    <label class="field-label">Country where degree was awarded <span class="req">*</span></label>
+    <select id="degcountry" onchange="showDegcountryOther()">
+      <option value="">Select…</option>
+      <option value="5">Philippines</option>
+      <option value="5">India</option>
+      <option value="5">United Kingdom</option>
+      <option value="5">United States</option>
+      <option value="5">Australia</option>
+      <option value="5">Canada</option>
+      <option value="5">New Zealand</option>
+      <option value="5">Ireland</option>
+      <option value="4">South Africa</option>
+      <option value="3">Other</option>
+    </select>
+    <div class="other-field" id="degcountry_other"><input type="text" id="degcountry_other_val" placeholder="Please specify the country"></div>
+  </div>
+  <div class="field"><label class="field-label">Teaching credential / licence <span class="req">*</span></label>
+    <select id="credential">
+      <option value="">Select…</option>
+      <option value="5">PGCE (UK)</option>
+      <option value="5">B.Ed (Education degree)</option>
+      <option value="5">State / national teaching licence</option>
+      <option value="4">School-based or alternative route</option>
+      <option value="2">In progress / not yet completed</option>
+      <option value="0">No formal teaching credential</option>
+    </select>
+  </div>
+  <div class="field"><label class="field-label">Teaching subject specialty <span class="req">*</span></label><input type="text" id="subject" placeholder="e.g. Secondary Mathematics, Primary"></div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(1)">← Back</button><button class="btn btn-next" onclick="nextStep(3)">Next →</button></div>
+</div>
+
+<div class="card" id="step3">
+  <div class="gate-badge">Gate 2 · Experience</div>
+  <div class="card-title">Your teaching experience</div>
+  <div class="card-sub">International curriculum experience is highly valued.</div>
+  <div class="grid2">
+    <div class="field"><label class="field-label">Years of full-time teaching <span class="req">*</span></label>
+      <select id="years">
+        <option value="">Select…</option>
+        <option value="1">Less than 1 year</option>
+        <option value="2">1–2 years</option>
+        <option value="3">3–4 years</option>
+        <option value="4">5–7 years</option>
+        <option value="5">8+ years</option>
+      </select>
+    </div>
+    <div class="field"><label class="field-label">Current school type <span class="req">*</span></label>
+      <select id="schooltype">
+        <option value="">Select…</option>
+        <option value="5">International school (abroad)</option>
+        <option value="4">International school (home country)</option>
+        <option value="3">National / local school</option>
+        <option value="2">University / HE</option>
+        <option value="2">Tutoring / online only</option>
+      </select>
+    </div>
+  </div>
+  <div class="field"><label class="field-label">Curriculum experience (select all that apply) <span class="req">*</span></label>
+    <div class="check-group" id="curriculum">
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="IB"> IB (International Baccalaureate)</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="Cambridge"> Cambridge (IGCSE / A-Level)</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="British"> British National Curriculum</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="American"> American Curriculum</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="CBSE"> CBSE / Indian national</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="Other"> Other national curriculum</label>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(2)">← Back</button><button class="btn btn-next" onclick="nextStep(4)">Next →</button></div>
+</div>
+
+<div class="card" id="step4">
+  <div class="gate-badge">Gate 3 · English Proficiency</div>
+  <div class="card-title">English language ability</div>
+  <div class="card-sub">International schools require high English proficiency.</div>
+  <div class="field"><label class="field-label">Is English your first language? <span class="req">*</span></label>
+    <div class="radio-group" id="native_eng">
+      <label class="radio-opt" onclick="selectRadio(this,'native_eng');document.getElementById('ielts_section').style.display='none'"><input type="radio" name="native_eng" value="yes_native"> Yes — English is my first language</label>
+      <label class="radio-opt" onclick="selectRadio(this,'native_eng');document.getElementById('ielts_section').style.display='block'"><input type="radio" name="native_eng" value="no_native"> No — English is my second language</label>
+    </div>
+  </div>
+  <div class="field" id="ielts_section" style="display:none">
+    <label class="field-label">IELTS overall band score (or equivalent)</label>
+    <select id="ielts">
+      <option value="">Select…</option>
+      <option value="5">7.5 or above</option>
+      <option value="4">7.0</option>
+      <option value="3">6.5</option>
+      <option value="2">6.0</option>
+      <option value="1">Below 6.0</option>
+      <option value="0">No IELTS taken yet</option>
+    </select>
+    <div class="hint">A score of 7.0+ is strongly recommended for international schools.</div>
+  </div>
+  <div class="field"><label class="field-label">Language of instruction at your current school</label>
+    <select id="lang_school">
+      <option value="">Select…</option>
+      <option value="5">English only</option>
+      <option value="4">Primarily English, some local language</option>
+      <option value="2">Mixed equally</option>
+      <option value="1">Primarily another language</option>
+    </select>
+  </div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(3)">← Back</button><button class="btn btn-next" onclick="nextStep(5)">Next →</button></div>
+</div>
+
+<div class="card" id="step5">
+  <div class="gate-badge">Gate 4 · Document Readiness</div>
+  <div class="card-title">Your documents &amp; paperwork</div>
+  <div class="card-sub">Strong document readiness means faster placement.</div>
+  <div class="field"><label class="field-label">Passport validity <span class="req">*</span></label>
+    <select id="passport">
+      <option value="">Select…</option>
+      <option value="5">Valid for 18+ months</option>
+      <option value="3">Valid for 12–18 months</option>
+      <option value="2">Valid for 6–12 months</option>
+      <option value="0">Expires within 6 months or expired</option>
+    </select>
+  </div>
+  <div class="field"><label class="field-label">Police clearance certificate <span class="req">*</span></label>
+    <select id="police">
+      <option value="">Select…</option>
+      <option value="5">Obtained and valid (within 6 months)</option>
+      <option value="3">Obtained but older than 6 months</option>
+      <option value="2">In progress / applied for</option>
+      <option value="1">Not yet started</option>
+    </select>
+  </div>
+  <div class="field"><label class="field-label">Teaching licence validity</label>
+    <select id="lic_validity">
+      <option value="">Select…</option>
+      <option value="5">Valid for 12+ months</option>
+      <option value="3">Valid but expiring within 12 months</option>
+      <option value="2">Expired — can renew</option>
+      <option value="1">No formal licence</option>
+    </select>
+  </div>
+  <div class="field"><label class="field-label">Document attestation status</label>
+    <div class="radio-group" id="attest">
+      <label class="radio-opt" onclick="selectRadio(this,'attest')"><input type="radio" name="attest" value="yes_att"> Fully attested / apostilled</label>
+      <label class="radio-opt" onclick="selectRadio(this,'attest')"><input type="radio" name="attest" value="part_att"> Partially attested</label>
+      <label class="radio-opt" onclick="selectRadio(this,'attest')"><input type="radio" name="attest" value="no_att"> Not yet attested</label>
+    </div>
+  </div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(4)">← Back</button><button class="btn btn-next" onclick="nextStep(6)">Next →</button></div>
+</div>
+
+<div class="card" id="step6">
+  <div class="gate-badge">Gate 5 · Relocation Ambition</div>
+  <div class="card-title">Your relocation goals</div>
+  <div class="card-sub">Where do you want to go and when?</div>
+  <div class="field"><label class="field-label">Countries you're interested in (select all that apply) <span class="req">*</span></label>
+    <div class="check-group" id="dest_countries">
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="UAE"> 🇦🇪 UAE — Tax-free salaries, prestigious schools</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="Vietnam"> 🇻🇳 Vietnam — Growing market, vibrant lifestyle</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="Malaysia"> 🇲🇾 Malaysia — Established circuit, low cost</label>
+      <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox" value="Australia"> 🇦🇺 Australia — High salaries, PR pathways</label>
+      <label class="check-opt" onclick="toggleCheck(this);showOtherDest()"><input type="checkbox" value="Other"> Other country</label>
+    </div>
+    <div class="other-field" id="dest_other"><input type="text" id="dest_other_val" placeholder="Which country or countries?"></div>
+  </div>
+  <div class="field"><label class="field-label">When can you relocate? <span class="req">*</span></label>
+    <div class="radio-group" id="timeline">
+      <label class="radio-opt" onclick="selectRadio(this,'timeline')"><input type="radio" name="timeline" value="now"> Immediately</label>
+      <label class="radio-opt" onclick="selectRadio(this,'timeline')"><input type="radio" name="timeline" value="3mo"> Within 3 months</label>
+      <label class="radio-opt" onclick="selectRadio(this,'timeline')"><input type="radio" name="timeline" value="6mo"> 3–6 months</label>
+      <label class="radio-opt" onclick="selectRadio(this,'timeline')"><input type="radio" name="timeline" value="aug"> August / September intake</label>
+      <label class="radio-opt" onclick="selectRadio(this,'timeline')"><input type="radio" name="timeline" value="explore"> Just exploring</label>
+    </div>
+  </div>
+  <div class="field"><label class="field-label">Expected monthly salary (USD) <span class="req">*</span></label>
+    <select id="salary">
+      <option value="">Select…</option>
+      <option value="3">Under $2,000 / month</option>
+      <option value="4">$2,000–$3,000 / month</option>
+      <option value="5">$3,000–$4,500 / month</option>
+      <option value="5">$4,500–$6,000 / month</option>
+      <option value="4">$6,000+ / month</option>
+    </select>
+    <div class="hint">UAE: 12,000–20,000 AED tax-free · Australia: AUD $75k–$110k · Malaysia/Vietnam: $2,000–$4,000</div>
+  </div>
+  <div class="field"><label class="field-label">Flexible on subject / year group?</label>
+    <div class="radio-group" id="flex">
+      <label class="radio-opt" onclick="selectRadio(this,'flex')"><input type="radio" name="flex" value="yes"> Yes — open to related roles</label>
+      <label class="radio-opt" onclick="selectRadio(this,'flex')"><input type="radio" name="flex" value="no"> No — committed to my specialty</label>
+    </div>
+  </div>
+  <div class="field"><label class="field-label">Why do you want to relocate? (optional)</label><textarea id="why_relocate" placeholder="Career, salary, family reasons…"></textarea></div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(5)">← Back</button><button class="btn btn-next" onclick="nextStep(7)">Next →</button></div>
+</div>
+
+<div class="card" id="step7">
+  <div class="gate-badge">Final Step · Resume</div>
+  <div class="card-title">Upload your resume / CV</div>
+  <div class="card-sub">PDF or Word format, max 5MB. (Optional — we can request it later.)</div>
+  <div class="field">
+    <div class="upload-area" id="upload-area" onclick="document.getElementById('resume-input').click()">
+      <input type="file" id="resume-input" accept=".pdf,.doc,.docx" onchange="handleFile(this.files[0])">
+      <div class="upload-icon">📄</div>
+      <div class="upload-label">Click to upload or drag &amp; drop</div>
+      <div class="upload-sub">PDF, DOC, or DOCX · Max 5MB</div>
+    </div>
+    <div class="file-preview" id="file-preview"><span>✅</span><span id="file-name"></span></div>
+  </div>
+  <div class="field"><label class="field-label">Additional notes for Arc (optional)</label><textarea id="extra_notes" placeholder="Anything else you'd like us to know…"></textarea></div>
+  <div class="nav"><button class="btn btn-back" onclick="nextStep(6)">← Back</button><button class="btn btn-next" onclick="submitForm()">Submit my application →</button></div>
+</div>
+
+<div class="card" id="step8">
+  <div id="result-area"></div>
+  <div class="thank-note" id="thank-note"></div>
+  <div id="gate-detail"></div>
+  <p style="text-align:center;font-size:13px;color:#a0aec0;margin-top:20px">Arc Consulting · Bangkok</p>
+</div>
+
+<button onclick="showAdminPanel()" style="background:none;border:none;color:#cbd5e0;font-size:11px;font-family:'Nunito',sans-serif;cursor:pointer;padding:4px 8px;margin-top:32px;display:block;margin-left:auto;margin-right:auto">Arc Admin</button>
+<div class="admin-gate" id="admin-gate">
+  <div class="admin-title">Arc Admin Access</div>
+  <div class="admin-sub">Enter your admin password to download all submissions.</div>
+  <input type="password" class="admin-input" id="admin-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkAdmin()">
+  <div style="color:#fc8181;font-size:13px;margin-top:8px;display:none" id="admin-err">Incorrect password. Try again.</div>
+  <button class="admin-btn" onclick="checkAdmin()">Unlock</button>
+</div>
+<div class="admin-panel" id="admin-panel">
+  <button class="admin-export-btn" onclick="exportCSV()">⬇ Download All Submissions (CSV)</button>
+  <div style="text-align:center;font-size:13px;color:#718096;margin-top:12px" id="stored-msg"></div>
+</div>
+
+</div>
+
+<script>
+var submissions = [];
+var resumeFile = null;
+var ADMIN_PW = 'Arc2025!';
+
+function nextStep(n) {
+  if (n > 1 && !validateStep(n - 1)) return;
+  document.querySelectorAll('.card').forEach(function(c) { c.classList.remove('active'); });
+  document.getElementById('step' + n).classList.add('active');
+  var pct = Math.round((n / 8) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = n <= 7 ? ('Step ' + n + ' of 7') : 'Complete ✓';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function validateStep(step) {
+  var ok = true;
+  var fields = {
+    1: ['fname', 'lname', 'email', 'phone', 'whatsapp', 'nationality', 'location'],
+    2: ['degree', 'major', 'degcountry', 'credential', 'subject'],
+    3: ['years', 'schooltype'],
+    4: [],
+    5: ['passport', 'police'],
+    6: ['salary']
+  };
+
+  if (fields[step]) {
+    fields[step].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && !el.value.trim()) {
+        el.style.borderColor = '#e53e3e';
+        ok = false;
+      } else if (el) {
+        el.style.borderColor = '#cbd5e0';
+      }
+    });
+  }
+
+  if (step === 1) {
+    var nat = document.getElementById('nationality');
+    if (nat && nat.value === 'Other') {
+      var natOther = document.getElementById('nationality_other');
+      if (!natOther.value.trim()) {
+        natOther.style.borderColor = '#e53e3e';
+        ok = false;
+      } else {
+        natOther.style.borderColor = '#cbd5e0';
+      }
+    }
+  }
+
+  if (step === 2) {
+    var em = document.getElementById('email');
+    if (em.value && !/\S+@\S+\.\S+/.test(em.value)) {
+      em.style.borderColor = '#e53e3e';
+      ok = false;
+    }
+    var dc = document.getElementById('degcountry');
+    if (dc.value === '3') {
+      var dco = document.getElementById('degcountry_other_val');
+      if (!dco.value.trim()) {
+        dco.style.borderColor = '#e53e3e';
+        ok = false;
+      } else {
+        dco.style.borderColor = '#cbd5e0';
+      }
+    }
+  }
+
+  if (step === 3) {
+    var checked = document.querySelectorAll('#curriculum input:checked');
+    if (checked.length === 0) {
+      ok = false;
+      document.getElementById('curriculum').style.outline = '2px solid #e53e3e';
+    } else {
+      document.getElementById('curriculum').style.outline = 'none';
+    }
+  }
+
+  if (step === 4) {
+    var natEng = document.querySelector('#native_eng input:checked');
+    if (!natEng) ok = false;
+  }
+
+  if (step === 6) {
+    var dests = document.querySelectorAll('#dest_countries input:checked');
+    if (dests.length === 0) {
+      ok = false;
+      document.getElementById('dest_countries').style.outline = '2px solid #e53e3e';
+    } else {
+      document.getElementById('dest_countries').style.outline = 'none';
+      var hasOther = false;
+      dests.forEach(function(d) { if (d.value === 'Other') hasOther = true; });
+      if (hasOther) {
+        var dov = document.getElementById('dest_other_val');
+        if (!dov.value.trim()) {
+          dov.style.borderColor = '#e53e3e';
+          ok = false;
+        } else {
+          dov.style.borderColor = '#cbd5e0';
+        }
+      }
+    }
+    var tl = document.querySelector('#timeline input:checked');
+    if (!tl) ok = false;
+  }
+
+  if (!ok) alert('Please complete all required fields before continuing.');
+  return ok;
+}
+
+function showNationalityOther() {
+  var nat = document.getElementById('nationality');
+  var field = document.getElementById('nat_other');
+  field.style.display = nat.value === 'Other' ? 'block' : 'none';
+}
+
+function showDegcountryOther() {
+  var dc = document.getElementById('degcountry');
+  var field = document.getElementById('degcountry_other');
+  field.style.display = dc.value === '3' ? 'block' : 'none';
+}
+
+function showOtherDest() {
+  var field = document.getElementById('dest_other');
+  var hasOther = document.querySelector('#dest_countries input[value="Other"]:checked');
+  field.style.display = hasOther ? 'block' : 'none';
+}
+
+function toggleCheck(el) {
+  el.classList.toggle('selected');
+  el.querySelector('input').checked = !el.querySelector('input').checked;
+}
+
+function selectRadio(el, group) {
+  document.querySelectorAll('#' + group + ' .radio-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+
+function handleFile(file) {
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File too large. Max 5MB.');
+    return;
+  }
+  resumeFile = file;
+  document.getElementById('file-name').textContent = file.name;
+  document.getElementById('file-preview').style.display = 'flex';
+}
+
+function score() {
+  var s = 0;
+  s += parseInt(document.getElementById('degree').value || 0);
+  s += parseInt(document.getElementById('degcountry').value || 0);
+  s += parseInt(document.getElementById('credential').value || 0);
+  s += parseInt(document.getElementById('years').value || 0) * 2;
+  s += parseInt(document.getElementById('schooltype').value || 0);
+  var cv = 0;
+  document.querySelectorAll('#curriculum input:checked').forEach(function(c) {
+    if (['IB', 'Cambridge', 'British', 'American'].indexOf(c.value) > -1) cv = 5;
+  });
+  s += cv;
+  var natEng = document.querySelector('#native_eng input:checked');
+  if (natEng && natEng.value === 'yes_native') {
+    s += 10;
+  } else {
+    s += parseInt(document.getElementById('ielts').value || 0) * 2;
+  }
+  s += parseInt(document.getElementById('lang_school').value || 0);
+  s += parseInt(document.getElementById('passport').value || 0) * 2;
+  s += parseInt(document.getElementById('police').value || 0) * 2;
+  s += parseInt(document.getElementById('lic_validity').value || 0);
+  var at = document.querySelector('#attest input:checked');
+  if (at) {
+    if (at.value === 'yes_att') s += 5;
+    else if (at.value === 'part_att') s += 2;
+  }
+  var tl = document.querySelector('#timeline input:checked');
+  if (tl) {
+    var tv = {now: 5, '3mo': 5, '6mo': 4, aug: 3, explore: 1};
+    s += (tv[tl.value] || 1) * 2;
+  }
+  s += parseInt(document.getElementById('salary').value || 0);
+  return Math.min(100, Math.round(s / 0.9));
+}
+
+function tier(s) {
+  if (s >= 80) {
+    return {cls: 'result-green', icon: '🟢', label: 'Placement Ready', msg: 'Excellent profile! We\'ll review your submission and reach out ASAP to discuss live school vacancies.'};
+  } else if (s >= 55) {
+    return {cls: 'result-yellow', icon: '🟡', label: 'Nearly There', msg: 'Strong foundation — 1–2 areas to strengthen. We\'ll send you a personalized gap-closing guide.'};
+  } else {
+    return {cls: 'result-red', icon: '🔴', label: 'Building Towards It', msg: 'You\'re early in your journey. We\'ll send you a clear action plan to get fully ready.'};
+  }
+}
+
+function getSelectText(id) {
+  var el = document.getElementById(id);
+  return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '—';
+}
+
+function submitForm() {
+  var fname = document.getElementById('fname').value;
+  var lname = document.getElementById('lname').value;
+  var email = document.getElementById('email').value;
+  var phone = document.getElementById('phone').value;
+  var whatsapp = document.getElementById('whatsapp').value;
+  var line = document.getElementById('line_id').value;
+  var nat = document.getElementById('nationality').value === 'Other' ? document.getElementById('nationality_other').value : document.getElementById('nationality').value;
+  var loc = document.getElementById('location').value;
+  var sc = score();
+  var t = tier(sc);
+  
+  var data = {
+    timestamp: new Date().toLocaleString(),
+    firstName: fname,
+    lastName: lname,
+    email: email,
+    phone: phone,
+    whatsapp: whatsapp,
+    lineId: line,
+    nationality: nat,
+    location: loc,
+    degree: getSelectText('degree'),
+    major: document.getElementById('major').value,
+    degreeCountry: getSelectText('degcountry'),
+    credential: getSelectText('credential'),
+    subject: document.getElementById('subject').value,
+    yearsExp: getSelectText('years'),
+    schoolType: getSelectText('schooltype'),
+    curricula: Array.from(document.querySelectorAll('#curriculum input:checked')).map(function(c) { return c.value; }).join('; '),
+    nativeEnglish: (document.querySelector('#native_eng input:checked') || {}).value,
+    ielts: getSelectText('ielts'),
+    langInstruction: getSelectText('lang_school'),
+    passport: getSelectText('passport'),
+    police: getSelectText('police'),
+    licValidity: getSelectText('lic_validity'),
+    attestation: (document.querySelector('#attest input:checked') || {}).value,
+    destinations: Array.from(document.querySelectorAll('#dest_countries input:checked')).map(function(c) { return c.value === 'Other' ? document.getElementById('dest_other_val').value : c.value; }).join('; '),
+    timeline: (document.querySelector('#timeline input:checked') || {}).value,
+    salary: getSelectText('salary'),
+    flexibility: (document.querySelector('#flex input:checked') || {}).value,
+    whyRelocate: document.getElementById('why_relocate').value,
+    resumeFile: resumeFile ? resumeFile.name : 'Not uploaded',
+    extraNotes: document.getElementById('extra_notes').value,
+    score: sc,
+    tier: t.label
+  };
+
+  submissions.push(data);
+
+  document.getElementById('result-area').innerHTML = '<div class="result-card ' + t.cls + '"><div class="result-icon">' + t.icon + '</div><div class="result-tier">' + t.label + '</div><div class="result-msg">' + t.msg + '</div></div>';
+  document.getElementById('thank-note').innerHTML = 'Thank you, <strong>' + fname + '</strong>! Arc has received your submission.<br>You\'ll hear from us soon via email.';
+  
+  var detail = '<div class="gate-summary"><div class="gate-row"><div class="gate-label">Name</div><div class="gate-val">' + fname + ' ' + lname + '</div></div><div class="gate-row"><div class="gate-label">WhatsApp</div><div class="gate-val">' + whatsapp + '</div></div>';
+  if (line) detail += '<div class="gate-row"><div class="gate-label">LINE</div><div class="gate-val">' + line + '</div></div>';
+  detail += '<div class="gate-row"><div class="gate-label">Destinations</div><div class="gate-val">' + (data.destinations || '—') + '</div></div><div class="gate-row"><div class="gate-label">Timeline</div><div class="gate-val">' + (data.timeline || '—') + '</div></div></div>';
+  
+  document.getElementById('gate-detail').innerHTML = detail;
+  nextStep(8);
+}
+
+function showAdminPanel() {
+  document.getElementById('admin-gate').classList.add('active');
+  document.getElementById('admin-gate').scrollIntoView({behavior: 'smooth'});
+}
+
+function checkAdmin() {
+  var pw = document.getElementById('admin-pw').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('admin-gate').classList.remove('active');
+    document.getElementById('admin-panel').style.display = 'block';
+    document.getElementById('stored-msg').textContent = 'Total submissions this session: ' + submissions.length;
+    document.getElementById('admin-panel').scrollIntoView({behavior: 'smooth'});
+  } else {
+    document.getElementById('admin-err').style.display = 'block';
+    document.getElementById('admin-pw').value = '';
+  }
+}
+
+function exportCSV() {
+  if (submissions.length === 0) {
+    alert('No submissions yet.');
+    return;
+  }
+  var keys = Object.keys(submissions[0]);
+  var rows = [keys.join(',')];
+  submissions.forEach(function(r) {
+    rows.push(keys.map(function(k) {
+      var val = (r[k] || '').toString().replace(/"/g, '""');
+      return '"' + val + '"';
+    }).join(','));
+  });
+  var blob = new Blob([rows.join('\n')], {type: 'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'arc-submissions-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+}
+</script>
+</body>
+</html>
